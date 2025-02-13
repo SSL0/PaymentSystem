@@ -2,16 +2,20 @@ services:
   postgres:
     image: 'postgres:latest'
     restart: unless-stopped
-    env_file: ./.env
-    environment:
-      - POSTGRES_USER=$POSTGRES_USER
-      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
-      - POSTGRES_DB=$POSTGRES_DB
-    ports:
-        - $POSTGRES_LOCAL_PORT:$POSTGRES_DOCKER_PORT
+    env_file:
+      - path: ./default.env
+        required: true
+      - path: ./.env
+        required: false
     healthcheck:
-      test: [ 'CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}' ]
+      test: [ 'CMD-SHELL', 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}' ]
       interval: 5s
+    ports:
+      - "5432:5432"
+    environment:
+      PGDATA: /data/pgdata
+    volumes:
+        - ./pgdata:/data/pgdata
 
   postgres_migration:
     build:
@@ -19,9 +23,11 @@ services:
     image: golang:1.22.0-alpine
     entrypoint: ./db/migrate.sh
     restart: on-failure:5
-    env_file: ./.env
-    environment:
-      - POSTGRES_URL=$POSTGRES_URL
+    env_file:
+      - path: ./default.env
+        required: true
+      - path: ./.env
+        required: false
     depends_on:
       postgres:
         condition: service_healthy
@@ -36,6 +42,12 @@ services:
         condition: service_healthy
       postgres_migration:
         condition: service_completed_successfully
-    env_file: ./.env
-    environment:
-      - POSTGRES_URL=$POSTGRES_URL
+    env_file:
+      - path: ./default.env
+        required: true
+      - path: ./.env
+        required: false
+
+volumes:
+  pgdata:
+    driver: local
