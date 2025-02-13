@@ -32,7 +32,14 @@ func (s *PaymentService) Send(from string, to string, amount float32) error {
 	if amount <= 0 {
 		return errors.New("amount must be positive")
 	}
+
 	err := s.repo.TransferMoney(from, to, amount)
+
+	if err != nil {
+		return err
+	}
+
+	err = s.repo.CreateTransaction(from, to, amount)
 	return err
 }
 
