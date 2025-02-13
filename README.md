@@ -1,5 +1,7 @@
 # Payment System
 
+Ссылка на репозиторий: https://github.com/SSL0/PaymentSystem
+
 Для запуска приложения требуется:
  - docker-compose
 
@@ -9,3 +11,4 @@ docker-compose.exe -f docker-compose.yaml up --build -d --remove-orphans
 ```
 
 Приложение использует порт `8080`
+
