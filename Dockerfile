@@ -1,4 +1,4 @@
-FROM golang:1.22.0-alpine
+FROM golang:1.23.0-alpine
 LABEL authors="Log1c0"
 
 WORKDIR /app
@@ -9,7 +9,7 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -o cmd/paymentapi/paymentapi cmd/paymentapi/paymentapi.go
+RUN go build -o cmd/paymentapi/paymentapi cmd/paymentapi/main.go
 
 EXPOSE 8080
 
