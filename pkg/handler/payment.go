@@ -33,7 +33,7 @@ func (h *Handler) Send(c *gin.Context) {
 		return
 	}
 
-	if body.From == "" || body.To == "" || body.Amount <= 0.0 {
+	if body.From == "" || body.To == "" || body.From == body.To || body.Amount <= 0.0 {
 		c.JSON(http.StatusBadRequest, "invalid input data")
 		return
 	}
