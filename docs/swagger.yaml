@@ -1,0 +1,114 @@
+basePath: /api/
+definitions:
+  handler.SendRequestBody:
+    properties:
+      amount:
+        type: number
+      from:
+        type: string
+      to:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: log1c0@protonmail.com
+    name: log1c0
+  description: This is a payment transaction processing system
+  title: PaymentAPI
+  version: "1.0"
+paths:
+  /balance/{address}:
+    get:
+      consumes:
+      - application/json
+      description: returns the amount of funds stored in the wallet
+      parameters:
+      - description: Wallet address
+        in: path
+        name: address
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Returns wallet address and balance
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid wallet address (empty)
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Get balance by wallet address
+      tags:
+      - wallet
+  /last:
+    get:
+      consumes:
+      - application/json
+      description: returns information about the N most recent transfers of funds
+      parameters:
+      - description: Number of transactions to fetch (must be positive)
+        in: query
+        name: count
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Returns list of transactions
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid count (not an integer or <= 0)
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Get last N transactions
+      tags:
+      - transactions
+  /send:
+    post:
+      consumes:
+      - application/json
+      description: makes transaction to send some amount of money from one wallet
+        to other
+      parameters:
+      - description: Transaction details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.SendRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Returns success message
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Invalid input data
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Send handler function
+      tags:
+      - transactions
+swagger: "2.0"

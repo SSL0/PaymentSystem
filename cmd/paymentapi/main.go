@@ -5,16 +5,17 @@ import (
 	"PaymentAPI/pkg/repository"
 	"PaymentAPI/pkg/service"
 	"fmt"
+
+	_ "PaymentAPI/docs"
 )
 
-// @title           Your API Title
+// @title           PaymentAPI
 // @version         1.0
-// @description     This is a sample API.
-// @termsOfService  http://swagger.io/terms/
-// @contact.name    API Support
-// @contact.email   log1c05678@gmail.com
+// @description     This is a payment transaction processing system
+// @contact.name    log1c0
+// @contact.email   log1c0@protonmail.com
 // @host            localhost:8080
-// @BasePath        /api/v1
+// @BasePath        /api/
 func main() {
 	postgres, err := repository.NewPostgresdb()
 	if err != nil {

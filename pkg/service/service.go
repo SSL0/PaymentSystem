@@ -7,7 +7,7 @@ import (
 
 type Payment interface {
 	Send(from string, to string, amount float32) error
-	GetLast(count int) ([]entity.Transaction, error)
+	GetLast(count int) (*[]entity.Transaction, error)
 	GetBalance(address string) (float32, error)
 }
 

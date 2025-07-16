@@ -2,19 +2,31 @@ package handler
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
-type ResponseBody struct {
+type SendRequestBody struct {
 	From   string  `json:"from"`
 	To     string  `json:"to"`
 	Amount float32 `json:"amount"`
 }
 
+// Send godoc
+// @Summary     Send handler function
+// @Description makes transaction to send some amount of money from one wallet to other
+// @Tags 		transactions
+// @Accept 		json
+// @Produce 	json
+// @Param 		request body SendRequestBody true "Transaction details"
+// @Success 	200 {object} map[string]string "Returns success message"
+// @Failure		400 {object} map[string]string "Invalid input data"
+// @Failure 	500 {object} map[string]string "Internal server error"
+// @Router 		/send [post]
 func (h *Handler) Send(c *gin.Context) {
-	body := ResponseBody{}
+	body := SendRequestBody{}
 
 	if err := c.ShouldBindJSON(&body); err != nil {
 		c.JSON(http.StatusBadRequest, "invalid input data")
@@ -36,6 +48,17 @@ func (h *Handler) Send(c *gin.Context) {
 	c.JSON(http.StatusOK, "successful")
 }
 
+// GetBalance godoc
+// @Summary     Get balance by wallet address
+// @Description returns the amount of funds stored in the wallet
+// @Tags		wallet
+// @Accept 		json
+// @Produce 	json
+// @Param 		address path string true "Wallet address"
+// @Success 	200 {object} map[string]struct{} "Returns wallet address and balance"
+// @Failure 	400 {object} map[string]string "Invalid wallet address (empty)"
+// @Failure 	500 {object} map[string]string "Internal server error"
+// @Router 		/balance/{address} [get]
 func (h *Handler) GetBalance(c *gin.Context) {
 	address := c.Param("address")
 	if address == "" {
@@ -54,6 +77,17 @@ func (h *Handler) GetBalance(c *gin.Context) {
 	})
 }
 
+// GetBalance godoc
+// @Summary      Get last N transactions
+// @Description  returns information about the N most recent transfers of funds
+// @Tags		 transactions
+// @Accept       json
+// @Produce      json
+// @Param        count   query     int  true  "Number of transactions to fetch (must be positive)"
+// @Success      200     {object}  map[string]interface{}  "Returns list of transactions"
+// @Failure      400     {object}  map[string]string       "Invalid count (not an integer or <= 0)"
+// @Failure      500     {object}  map[string]string       "Internal server error"
+// @Router       /last [get]
 func (h *Handler) GetLast(c *gin.Context) {
 	N := c.Query("count")
 	count, err := strconv.Atoi(N)

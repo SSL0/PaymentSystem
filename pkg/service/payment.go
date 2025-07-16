@@ -43,14 +43,14 @@ func (s *PaymentService) Send(from string, to string, amount float32) error {
 	return err
 }
 
-func (s *PaymentService) GetLast(count int) ([]entity.Transaction, error) {
+func (s *PaymentService) GetLast(count int) (*[]entity.Transaction, error) {
 	if count <= 0 {
-		return []entity.Transaction{}, errors.New("count must be positive")
+		return &[]entity.Transaction{}, errors.New("count must be positive")
 	}
 	transactions, err := s.repo.GetLastNTransactions(count)
 
 	if err != nil {
-		return []entity.Transaction{}, err
+		return &[]entity.Transaction{}, err
 	}
 
 	return transactions, nil

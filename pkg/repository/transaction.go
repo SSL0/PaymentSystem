@@ -3,6 +3,7 @@ package repository
 import (
 	"PaymentAPI/pkg/entity"
 	"errors"
+
 	"github.com/jmoiron/sqlx"
 )
 
@@ -14,15 +15,15 @@ func NewTransactionRepository(db *sqlx.DB) *TransactionRepository {
 	return &TransactionRepository{db}
 }
 
-func (r *TransactionRepository) GetLastNTransactions(count int) ([]entity.Transaction, error) {
+func (r *TransactionRepository) GetLastNTransactions(count int) (*[]entity.Transaction, error) {
 	var result []entity.Transaction
 	if count <= 0 {
-		return result, errors.New("count must be positive")
+		return &result, errors.New("count must be positive")
 	}
 
 	rows, err := r.db.Queryx("SELECT * FROM transactions ORDER BY time DESC LIMIT $1", count)
 	if err != nil {
-		return []entity.Transaction{}, err
+		return &[]entity.Transaction{}, err
 	}
 
 	for rows.Next() {
@@ -30,13 +31,13 @@ func (r *TransactionRepository) GetLastNTransactions(count int) ([]entity.Transa
 
 		err := rows.StructScan(&transaction)
 		if err != nil {
-			return []entity.Transaction{}, err
+			return &[]entity.Transaction{}, err
 		}
 
 		result = append(result, transaction)
 	}
 
-	return result, err
+	return &result, err
 }
 
 func (r *TransactionRepository) CreateTransaction(from string, to string, amount float32) error {

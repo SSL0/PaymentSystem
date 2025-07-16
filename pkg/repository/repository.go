@@ -3,6 +3,7 @@ package repository
 import (
 	"PaymentAPI/pkg/entity"
 	"database/sql"
+
 	"github.com/jmoiron/sqlx"
 )
 
@@ -12,7 +13,7 @@ type Wallet interface {
 }
 
 type Transaction interface {
-	GetLastNTransactions(count int) ([]entity.Transaction, error)
+	GetLastNTransactions(count int) (*[]entity.Transaction, error)
 	CreateTransaction(from string, to string, amount float32) error
 }
 
