@@ -21,7 +21,7 @@ type SendRequestBody struct {
 // @Accept 		json
 // @Produce 	json
 // @Param 		request body SendRequestBody true "Transaction details"
-// @Success 	200 {object} map[string]string "Returns success message"
+// @Success 	200 {object} map[string]interface{} "Returns success message"
 // @Failure		400 {object} map[string]string "Invalid input data"
 // @Failure 	500 {object} map[string]string "Internal server error"
 // @Router 		/send [post]
@@ -55,10 +55,10 @@ func (h *Handler) Send(c *gin.Context) {
 // @Accept 		json
 // @Produce 	json
 // @Param 		address path string true "Wallet address"
-// @Success 	200 {object} map[string]struct{} "Returns wallet address and balance"
+// @Success 	200 {object} map[string]interface{} "Returns wallet address and balance"
 // @Failure 	400 {object} map[string]string "Invalid wallet address (empty)"
 // @Failure 	500 {object} map[string]string "Internal server error"
-// @Router 		/balance/{address} [get]
+// @Router 		/wallet/{address}/balance [get]
 func (h *Handler) GetBalance(c *gin.Context) {
 	address := c.Param("address")
 	if address == "" {
@@ -87,7 +87,7 @@ func (h *Handler) GetBalance(c *gin.Context) {
 // @Success      200     {object}  map[string]interface{}  "Returns list of transactions"
 // @Failure      400     {object}  map[string]string       "Invalid count (not an integer or <= 0)"
 // @Failure      500     {object}  map[string]string       "Internal server error"
-// @Router       /last [get]
+// @Router       /transactions [get]
 func (h *Handler) GetLast(c *gin.Context) {
 	N := c.Query("count")
 	count, err := strconv.Atoi(N)

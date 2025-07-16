@@ -15,7 +15,14 @@ import (
 // @contact.name    log1c0
 // @contact.email   log1c0@protonmail.com
 // @host            localhost:8080
-// @BasePath        /api/
+// @BasePath        /api/v1
+
+// @tag.name Transactions
+// @tag.description "Endpoints for transaction operations"
+
+// @tag.name Wallet
+// @tag.description "Endpoints for wallet information"
+
 func main() {
 	postgres, err := repository.NewPostgresdb()
 	if err != nil {

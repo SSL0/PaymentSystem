@@ -18,9 +18,9 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/balance/{address}": {
-            "get": {
-                "description": "returns the amount of funds stored in the wallet",
+        "/send": {
+            "post": {
+                "description": "makes transaction to send some amount of money from one wallet to other",
                 "consumes": [
                     "application/json"
                 ],
@@ -28,42 +28,50 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "wallet"
+                    "transactions"
                 ],
-                "summary": "Get balance by wallet address",
+                "summary": "Send handler function",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "Wallet address",
-                        "name": "address",
-                        "in": "path",
-                        "required": true
+                        "description": "Transaction details",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.SendRequestBody"
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Returns wallet address and balance",
+                        "description": "Returns success message",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
                         }
                     },
                     "400": {
-                        "description": "Invalid wallet address (empty)",
+                        "description": "Invalid input data",
                         "schema": {
-                            "type": "string"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "type": "string"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
             }
         },
-        "/last": {
+        "/transactions": {
             "get": {
                 "description": "returns information about the N most recent transfers of funds",
                 "consumes": [
@@ -96,21 +104,27 @@ const docTemplate = `{
                     "400": {
                         "description": "Invalid count (not an integer or \u003c= 0)",
                         "schema": {
-                            "type": "string"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "type": "string"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
             }
         },
-        "/send": {
-            "post": {
-                "description": "makes transaction to send some amount of money from one wallet to other",
+        "/wallet/{address}/balance": {
+            "get": {
+                "description": "returns the amount of funds stored in the wallet",
                 "consumes": [
                     "application/json"
                 ],
@@ -118,23 +132,28 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "transactions"
+                    "wallet"
                 ],
-                "summary": "Send handler function",
+                "summary": "Get balance by wallet address",
                 "parameters": [
                     {
-                        "description": "Transaction details",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/handler.SendRequestBody"
-                        }
+                        "type": "string",
+                        "description": "Wallet address",
+                        "name": "address",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Returns success message",
+                        "description": "Returns wallet address and balance",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid wallet address (empty)",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -142,16 +161,13 @@ const docTemplate = `{
                             }
                         }
                     },
-                    "400": {
-                        "description": "Invalid input data",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "type": "string"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
@@ -173,14 +189,24 @@ const docTemplate = `{
                 }
             }
         }
-    }
+    },
+    "tags": [
+        {
+            "description": "\"Endpoints for transaction operations\"",
+            "name": "Transactions"
+        },
+        {
+            "description": "\"Endpoints for wallet information\"",
+            "name": "Wallet"
+        }
+    ]
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "localhost:8080",
-	BasePath:         "/api/",
+	BasePath:         "/api/v1",
 	Schemes:          []string{},
 	Title:            "PaymentAPI",
 	Description:      "This is a payment transaction processing system",

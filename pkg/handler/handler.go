@@ -1,14 +1,3 @@
-// @title PaymentAPI
-// @version 1.0
-// @description API for wallet transactions and balance management
-// @BasePath /api
-
-// @tag.name Transactions
-// @tag.description "Endpoints for transaction operations"
-
-// @tag.name Wallet
-// @tag.description "Endpoints for wallet information"
-
 package handler
 
 import (
@@ -31,7 +20,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.Default()
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	api := router.Group("/api")
+	api := router.Group("/api/v1")
 	{
 		api.POST("/send", h.Send)
 		api.GET("/transactions", h.GetLast)

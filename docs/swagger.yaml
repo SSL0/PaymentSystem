@@ -1,4 +1,4 @@
-basePath: /api/
+basePath: /api/v1
 definitions:
   handler.SendRequestBody:
     properties:
@@ -18,37 +18,43 @@ info:
   title: PaymentAPI
   version: "1.0"
 paths:
-  /balance/{address}:
-    get:
+  /send:
+    post:
       consumes:
       - application/json
-      description: returns the amount of funds stored in the wallet
+      description: makes transaction to send some amount of money from one wallet
+        to other
       parameters:
-      - description: Wallet address
-        in: path
-        name: address
+      - description: Transaction details
+        in: body
+        name: request
         required: true
-        type: string
+        schema:
+          $ref: '#/definitions/handler.SendRequestBody'
       produces:
       - application/json
       responses:
         "200":
-          description: Returns wallet address and balance
+          description: Returns success message
           schema:
             additionalProperties: true
             type: object
         "400":
-          description: Invalid wallet address (empty)
+          description: Invalid input data
           schema:
-            type: string
+            additionalProperties:
+              type: string
+            type: object
         "500":
           description: Internal server error
           schema:
-            type: string
-      summary: Get balance by wallet address
+            additionalProperties:
+              type: string
+            type: object
+      summary: Send handler function
       tags:
-      - wallet
-  /last:
+      - transactions
+  /transactions:
     get:
       consumes:
       - application/json
@@ -70,45 +76,55 @@ paths:
         "400":
           description: Invalid count (not an integer or <= 0)
           schema:
-            type: string
+            additionalProperties:
+              type: string
+            type: object
         "500":
           description: Internal server error
-          schema:
-            type: string
-      summary: Get last N transactions
-      tags:
-      - transactions
-  /send:
-    post:
-      consumes:
-      - application/json
-      description: makes transaction to send some amount of money from one wallet
-        to other
-      parameters:
-      - description: Transaction details
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/handler.SendRequestBody'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Returns success message
           schema:
             additionalProperties:
               type: string
             type: object
-        "400":
-          description: Invalid input data
+      summary: Get last N transactions
+      tags:
+      - transactions
+  /wallet/{address}/balance:
+    get:
+      consumes:
+      - application/json
+      description: returns the amount of funds stored in the wallet
+      parameters:
+      - description: Wallet address
+        in: path
+        name: address
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Returns wallet address and balance
           schema:
-            type: string
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid wallet address (empty)
+          schema:
+            additionalProperties:
+              type: string
+            type: object
         "500":
           description: Internal server error
           schema:
-            type: string
-      summary: Send handler function
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get balance by wallet address
       tags:
-      - transactions
+      - wallet
 swagger: "2.0"
+tags:
+- description: '"Endpoints for transaction operations"'
+  name: Transactions
+- description: '"Endpoints for wallet information"'
+  name: Wallet
